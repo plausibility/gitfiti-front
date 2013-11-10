@@ -61,7 +61,8 @@ a {
 /* These button rules should probably be cleaned up */
 
 .button {
-    padding: 2px 4px;
+    /*padding: 2px 4px;*/
+    padding: 0px 2px;
     background-color: #4479BA;
     color: #FFF;
     -webkit-border-radius: 4px;

@@ -8,25 +8,56 @@
 			width = 52, height = 7,
 			$row = $("<span class='commit-row'/>"),
 			$block = $("<span class='commit-block' data-color=0 />");
-		for (var i = 0; i < width; i++) {
-			$row.append($block.clone());
-		};
-		for (var i = 0; i < height; i++) {
-			$graph.append($row.clone());
-		};
+		for (var y = 0; y < height; y++) {
+			var $erow = $row.clone();
+			for (var x = 0; x < width; x++) {
+				var $eblock = $block.clone();
+				$eblock.attr("data-gitfiti-x", x);
+				$eblock.attr("data-gitfiti-y", y);
+				var xy = getXY($eblock);
+				$eblock.attr("data-color", xy || 0);
+				$erow.append($eblock);
+			}
+			$graph.append($erow);
+		}
+		function setXY($e, n) {
+			if (Modernizr.localstorage) {
+				var x = $e.attr("data-gitfiti-x"),
+					y = $e.attr("data-gitfiti-y"),
+					key = "gitfiti-" + x + "-" + y;
+				localStorage.setItem(key, n);
+			}
+		}
+		function getXY($e) {
+			if (Modernizr.localstorage) {
+				var x = $e.attr("data-gitfiti-x"),
+					y = $e.attr("data-gitfiti-y"),
+					key = "gitfiti-" + x + "-" + y;
+				return localStorage.getItem(key);
+			}
+			return 0;
+		}
 		$(".commit-block").click(function () {
 			var $that = $(this),
 				num = parseInt($that.attr("data-color"));
 			if (num < 4) {
-				$that.attr("data-color", num + 1);
+				num += 1
 			} else {
-				$that.attr("data-color", 0);
+				num = 0
 			}
+			$that.attr("data-color", num);
+			setXY($that, num);
 		});
 		$(".commit-block").bind("contextmenu", function () {
-			var $that = $(this);
-			$that.attr("data-color", 0);
+			$(this).attr("data-color", 0);
+			setXY($(this), 0);
 			return false;
+		});
+		$("#reset-grid").click(function () {
+			$(".commit-block").each(function (i, e) {
+				$(this).attr("data-color", 0);
+				setXY($(this), 0);
+			});
 		});
 	});
 </script>
@@ -36,12 +67,20 @@
 
 {% block content %}
 <h1 id="main-header"><a href="{{ url_for("index") }}">gitfiti</a></h1>
-<span id="sub-heading">graffiti your github commit graph</span>
+<span id="sub-heading">
+<button id="reset-grid" class="button red">reset</button>
+<!--graffiti your github commit graph-->
+</span>
 
 <div id="commit-graph">
 <!--
 	52 blocks
 	 7 rows
 -->
+</div>
+<div>
+	<p>
+		TODO, sorry!
+	</p>
 </div>
 {% endblock %}
