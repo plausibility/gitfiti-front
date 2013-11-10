@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block head %}
+{{ super() }}
+<script>
+	$(function () {
+		var $graph = $("#commit-graph"),
+			width = 52, height = 7,
+			$row = $("<span class='commit-row'/>"),
+			$block = $("<span class='commit-block' data-color=0 />");
+		for (var i = 0; i < width; i++) {
+			$row.append($block.clone());
+		};
+		for (var i = 0; i < height; i++) {
+			$graph.append($row.clone());
+		};
+		$(".commit-block").click(function () {
+			var $that = $(this),
+				num = parseInt($that.attr("data-color"));
+			if (num < 4) {
+				$that.attr("data-color", num + 1);
+			} else {
+				$that.attr("data-color", 0);
+			}
+		});
+		$(".commit-block").bind("contextmenu", function () {
+			var $that = $(this);
+			$that.attr("data-color", 0);
+			return false;
+		});
+	});
+</script>
+{% endblock %}
+
+{% block title %}gitfiti front{% endblock %}
+
+{% block content %}
+<h1 id="main-header"><a href="{{ url_for("index") }}">gitfiti</a></h1>
+<span id="sub-heading">graffiti your github commit graph</span>
+
+<div id="commit-graph">
+<!--
+	52 blocks
+	 7 rows
+-->
+</div>
+{% endblock %}
