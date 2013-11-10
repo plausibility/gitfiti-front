@@ -4,6 +4,10 @@
 {{ super() }}
 <script>
 	$(function () {
+		if (!Modernizr.localstorage) {
+			$("#ls-warning").text("WARNING! No localStorage - your art won't be stored. :(");
+		}
+
 		var $graph = $("#commit-graph"),
 			width = 52, height = 7,
 			$row = $("<span class='commit-row'/>"),
@@ -69,6 +73,7 @@
 <h1 id="main-header"><a href="{{ url_for("index") }}">gitfiti</a></h1>
 <span id="sub-heading">
 <button id="reset-grid" class="button red">reset</button>
+<span id="ls-warning"></span>
 <!--graffiti your github commit graph-->
 </span>
 
